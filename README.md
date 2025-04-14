@@ -19,7 +19,7 @@
 
 ## 🖥️ 预览
 
-![WebNav Hub 预览](https://via.placeholder.com/800x400/1a1a1a/8b5cf6?text=WebNav+Hub+Preview)
+![WebNav Hub 预览](dmo.png)
 
 ## 🚀 部署指南
 
