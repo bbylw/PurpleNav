@@ -1,0 +1,1581 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>WebNav Hub</title>
+    <style>
+      :root {
+        --primary-color: #8b5cf6; /* 紫色主题 */
+        --primary-light: #c4b5fd;
+        --primary-dark: #7c3aed;
+        --accent-color: #9333ea; /* 中紫色强调色 */
+        --accent-glow: rgba(147, 51, 234, 0.5);
+        --bg-color: #0d0d0d;
+        --card-bg-color: #1a1a1a;
+        --card-hover-bg: #292929;
+        --text-color: #fff;
+        --text-secondary: #aaa;
+        --gradient-1: linear-gradient(135deg, #a78bfa, #7c3aed);
+        --gradient-2: linear-gradient(135deg, #8b5cf6, #6d28d9);
+        --section-gap: 3rem;
+        --border-radius: 12px;
+        --transition-normal: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+        /* 统一图标配色 */
+        --icon-primary: #a78bfa;
+        --icon-hover: #c4b5fd;
+        --icon-shadow: rgba(139, 92, 246, 0.6);
+        --icon-size-normal: 1.8rem;
+        --icon-size-small: 1.4rem;
+      }
+
+      html {
+        font-size: 16px;
+        scroll-behavior: smooth;
+      }
+
+      body {
+        font-family: "Segoe UI", "Microsoft YaHei", Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: var(--bg-color);
+        color: var(--text-color);
+        line-height: 1.6;
+        overflow-x: hidden;
+      }
+
+      /* 定义滚动条样式 */
+      ::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+      }
+
+      ::-webkit-scrollbar-track {
+        background: #111;
+      }
+
+      ::-webkit-scrollbar-thumb {
+        background: var(--primary-dark);
+        border-radius: 3px;
+      }
+
+      ::-webkit-scrollbar-thumb:hover {
+        background: var(--accent-color);
+      }
+
+      /* 顶部标题设计 */
+      header {
+        background-color: #000;
+        background-image: radial-gradient(
+            circle at 10% 50%,
+            rgba(167, 139, 250, 0.12),
+            transparent 50%
+          ),
+          radial-gradient(
+            circle at 80% 80%,
+            rgba(139, 92, 246, 0.1),
+            transparent 50%
+          );
+        padding: 2rem 1rem;
+        text-align: center;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+        position: relative;
+        overflow: hidden;
+      }
+
+      header::before {
+        content: "";
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: linear-gradient(
+          to bottom right,
+          rgba(167, 139, 250, 0.04),
+          rgba(139, 92, 246, 0.03),
+          rgba(196, 181, 253, 0.04)
+        );
+        transform: rotate(30deg);
+        z-index: 0;
+      }
+
+      header h1 {
+        font-size: 2.5rem;
+        font-weight: 800;
+        margin: 0;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        background: var(--gradient-1);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        position: relative;
+        z-index: 1;
+        text-shadow: 0 0 40px rgba(139, 92, 246, 0.6);
+      }
+
+      header p {
+        color: var(--text-secondary);
+        margin: 0.5rem 0 0;
+        font-size: 1rem;
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+        position: relative;
+        z-index: 1;
+      }
+
+      /* 导航栏样式 */
+      nav {
+        background-color: rgba(20, 20, 20, 0.95);
+        padding: 0.8rem 0.6rem;
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+        border-bottom: 1px solid rgba(139, 92, 246, 0.2);
+      }
+
+      nav ul {
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      nav li {
+        margin: 0.3rem;
+      }
+
+      nav a {
+        color: var(--text-color);
+        text-decoration: none;
+        font-size: 0.95rem;
+        font-weight: 600;
+        padding: 0.7rem 1.1rem;
+        border-radius: 1.25rem;
+        transition: var(--transition-normal);
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+        letter-spacing: 0.5px;
+        border: 1px solid transparent;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+      }
+
+      nav a i {
+        background: var(--gradient-1);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        filter: drop-shadow(0 0 8px var(--icon-shadow));
+        font-size: 1.1rem;
+        margin-right: 0.2rem;
+      }
+
+      nav a:hover {
+        background-color: rgba(139, 92, 246, 0.15);
+        color: var(--primary-light);
+        border: 1px solid rgba(139, 92, 246, 0.3);
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(139, 92, 246, 0.2);
+      }
+
+      nav a.active {
+        background-color: var(--primary-color);
+        color: #fff;
+        box-shadow: 0 4px 15px rgba(139, 92, 246, 0.4);
+        border: 1px solid var(--primary-color);
+        font-weight: 700;
+      }
+
+      /* 主内容区样式 */
+      main {
+        max-width: 1200px;
+        margin: 1rem auto 3rem;
+        padding: 0 1.5rem;
+      }
+
+      /* 分类标题样式 */
+      .category-title {
+        position: relative;
+        font-size: 1.6rem;
+        font-weight: 700;
+        margin: 3.5rem 0 1.8rem;
+        color: #fff;
+        padding: 0.6rem 1rem 0.6rem 1.4rem;
+        text-transform: uppercase;
+        letter-spacing: 1.2px;
+        display: inline-flex;
+        align-items: center;
+        border-radius: 6px;
+        background: rgba(139, 92, 246, 0.12);
+        border-left: 4px solid var(--primary-color);
+        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.25);
+      }
+
+      .category-title::after {
+        content: "";
+        position: absolute;
+        bottom: -5px;
+        left: 0;
+        width: 100%;
+        height: 1px;
+        background: linear-gradient(
+          to right,
+          var(--primary-color),
+          transparent
+        );
+      }
+
+      .category-title i {
+        margin-right: 0.6rem;
+        font-size: 1.3rem;
+        background: var(--gradient-1);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        filter: drop-shadow(0 0 8px var(--icon-shadow));
+        opacity: 0.9;
+      }
+
+      /* 卡片网格样式 */
+      .link-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(9rem, 1fr));
+        gap: 1.4rem;
+        margin-bottom: var(--section-gap);
+        padding: 0.5rem 0.2rem;
+      }
+
+      /* 链接卡片样式 */
+      .link-card {
+        background-color: var(--card-bg-color);
+        background-image: linear-gradient(
+          145deg,
+          rgba(255, 255, 255, 0.05) 0%,
+          transparent 100%
+        );
+        border-radius: var(--border-radius);
+        padding: 1.6rem 0.8rem;
+        text-align: center;
+        transition: var(--transition-normal);
+        cursor: pointer;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 110px;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+      }
+
+      .link-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(to bottom, transparent, rgba(0, 0, 0, 0.2));
+        opacity: 0;
+        transition: var(--transition-normal);
+        z-index: 1;
+      }
+
+      .link-card::after {
+        content: "";
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: linear-gradient(
+          45deg,
+          transparent,
+          rgba(139, 92, 246, 0.05),
+          transparent,
+          rgba(139, 92, 246, 0.03)
+        );
+        opacity: 0;
+        transform: rotate(30deg);
+        transition: opacity 0.5s ease;
+        z-index: 2;
+      }
+
+      .link-card a {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        text-decoration: none;
+        z-index: 12;
+        display: block;
+        border-radius: var(--border-radius);
+      }
+
+      .link-card:hover {
+        background-color: var(--card-hover-bg);
+        transform: translateY(-6px);
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25),
+          0 0 0 1px rgba(139, 92, 246, 0.15), 0 0 25px rgba(139, 92, 246, 0.15);
+        border: 1px solid rgba(139, 92, 246, 0.25);
+      }
+
+      .link-card:hover::before {
+        opacity: 1;
+      }
+
+      .link-card:hover::after {
+        opacity: 1;
+        animation: shine 1.5s ease forwards;
+      }
+
+      @keyframes shine {
+        0% {
+          opacity: 0.7;
+          top: -50%;
+          left: -50%;
+        }
+        100% {
+          opacity: 0;
+          top: 150%;
+          left: 150%;
+        }
+      }
+
+      .link-card i {
+        font-size: var(--icon-size-normal);
+        margin-bottom: 0.8rem;
+        color: var(--icon-primary);
+        transition: var(--transition-normal);
+        position: relative;
+        z-index: 11;
+        filter: drop-shadow(0 0 10px var(--icon-shadow));
+      }
+
+      .link-card:hover i {
+        transform: scale(1.15) translateY(-2px);
+        color: var(--icon-hover);
+      }
+
+      .link-card h3 {
+        font-size: 0.9rem;
+        margin: 0;
+        color: var(--text-color);
+        line-height: 1.3;
+        font-weight: 500;
+        max-width: 100%;
+        height: 2.6em;
+        overflow: hidden;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        line-clamp: 2;
+        -webkit-box-orient: vertical;
+        text-overflow: ellipsis;
+        white-space: normal;
+        padding: 0 0.3rem;
+        position: relative;
+        z-index: 11;
+        transition: var(--transition-normal);
+      }
+
+      .link-card:hover h3 {
+        color: #fff;
+      }
+
+      /* 特殊卡片效果 - 随机为一些卡片添加深色效果 */
+      .link-card:nth-child(5n + 3) i {
+        color: var(--accent-color);
+      }
+
+      .link-card:nth-child(5n + 3):hover i {
+        color: var(--primary-light);
+        filter: drop-shadow(0 0 12px var(--accent-glow));
+      }
+
+      /* 返回顶部按钮 */
+      .back-to-top-btn {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        width: 50px;
+        height: 50px;
+        background: var(--gradient-1);
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: white;
+        cursor: pointer;
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(20px);
+        transition: all 0.3s ease;
+        z-index: 999;
+        box-shadow: 0 4px 15px rgba(139, 92, 246, 0.5),
+          0 0 0 1px rgba(139, 92, 246, 0.1);
+      }
+
+      .back-to-top-btn i {
+        font-size: 1.2rem;
+      }
+
+      .back-to-top-btn.show {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
+      }
+
+      .back-to-top-btn:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 6px 20px rgba(139, 92, 246, 0.6);
+      }
+
+      /* 页脚样式 */
+      footer {
+        background-color: #000;
+        background-image: radial-gradient(
+            circle at 20% 80%,
+            rgba(167, 139, 250, 0.08),
+            transparent 40%
+          ),
+          radial-gradient(
+            circle at 80% 20%,
+            rgba(139, 92, 246, 0.06),
+            transparent 40%
+          );
+        color: var(--text-secondary);
+        padding: 3rem 1rem 1.5rem;
+        font-size: 0.85rem;
+        position: relative;
+        border-top: 1px solid rgba(139, 92, 246, 0.2);
+      }
+
+      .footer-content {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        max-width: 1200px;
+        margin: 0 auto 2rem;
+        gap: 2rem;
+      }
+
+      .footer-logo {
+        flex: 1;
+        min-width: 200px;
+        margin-bottom: 1rem;
+        text-align: left;
+      }
+
+      .footer-logo h2 {
+        font-size: 1.8rem;
+        font-weight: 700;
+        margin: 0 0 0.5rem;
+        background: var(--gradient-1);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      .footer-logo p {
+        color: var(--text-secondary);
+        margin: 0;
+        font-size: 0.95rem;
+      }
+
+      .footer-links {
+        flex: 2;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 2rem;
+      }
+
+      .footer-links-group {
+        flex: 1;
+        min-width: 160px;
+        text-align: left;
+      }
+
+      .footer-links-group h3 {
+        font-size: 1.1rem;
+        color: #fff;
+        margin: 0 0 1rem;
+        font-weight: 600;
+      }
+
+      footer nav {
+        display: flex;
+        flex-direction: column;
+        gap: 0.7rem;
+        background-color: transparent;
+        box-shadow: none;
+        border: none;
+        padding: 0;
+      }
+
+      footer nav a {
+        color: var(--text-secondary);
+        text-decoration: none;
+        font-size: 0.9rem;
+        transition: var(--transition-normal);
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        border: none;
+        padding: 0;
+        width: fit-content;
+      }
+
+      footer nav a i {
+        font-size: 0.85rem;
+        background: var(--gradient-1);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        filter: drop-shadow(0 0 5px var(--icon-shadow));
+      }
+
+      footer nav a:hover {
+        background: transparent;
+        color: var(--primary-light);
+        transform: translateX(3px);
+        border: none;
+      }
+
+      .footer-bottom {
+        padding-top: 1.5rem;
+        text-align: center;
+        border-top: 1px solid rgba(255, 255, 255, 0.05);
+      }
+
+      .footer-bottom p {
+        margin: 0;
+        font-size: 0.8rem;
+        opacity: 0.7;
+      }
+
+      @media (max-width: 1200px) {
+        main {
+          padding: 1rem;
+          max-width: 95%;
+        }
+
+        .link-grid {
+          grid-template-columns: repeat(auto-fill, minmax(8rem, 1fr));
+          gap: 1rem;
+        }
+      }
+
+      @media (max-width: 768px) {
+        html {
+          font-size: 15px;
+        }
+
+        main {
+          padding: 0.8rem;
+        }
+
+        .link-grid {
+          grid-template-columns: repeat(auto-fill, minmax(7.5rem, 1fr));
+          gap: 1rem;
+          padding: 0.3rem 0.1rem;
+        }
+
+        nav {
+          padding: 0.5rem;
+        }
+
+        nav a {
+          padding: 0.5rem 0.8rem;
+          font-size: 0.95rem;
+          box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+        }
+
+        nav a i {
+          font-size: 1rem;
+        }
+
+        .category-title {
+          font-size: 1.4rem;
+          margin: 2rem 0 1.2rem;
+          padding: 0.5rem 0.9rem 0.5rem 1.2rem;
+        }
+
+        .link-card {
+          padding: 1.2rem 0.6rem;
+          min-height: 90px;
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .link-card i {
+          font-size: var(--icon-size-small);
+          margin-bottom: 0.6rem;
+        }
+
+        .link-card h3 {
+          font-size: 0.85rem;
+          height: 2.4em;
+        }
+      }
+
+      @media (max-width: 480px) {
+        html {
+          font-size: 14px;
+        }
+
+        main {
+          padding: 0.6rem;
+        }
+
+        .link-grid {
+          grid-template-columns: repeat(auto-fill, minmax(6.5rem, 1fr));
+          gap: 0.8rem;
+        }
+
+        header h1 {
+          font-size: 1.8rem;
+        }
+
+        nav li {
+          margin: 0.25rem;
+        }
+
+        nav a {
+          padding: 0.4rem 0.7rem;
+          font-size: 0.9rem;
+          box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+        }
+
+        nav a i {
+          font-size: 0.95rem;
+        }
+
+        .category-title {
+          font-size: 1.3rem;
+          margin: 1.8rem 0 1.1rem;
+          padding: 0.5rem 0.8rem 0.5rem 1.1rem;
+          letter-spacing: 1px;
+        }
+
+        .link-card {
+          padding: 1rem 0.5rem;
+          min-height: 80px;
+          box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+        }
+
+        .link-card i {
+          font-size: 1.3rem;
+          margin-bottom: 0.5rem;
+        }
+
+        .link-card h3 {
+          font-size: 0.8rem;
+          padding: 0 0.2rem;
+          height: 2.4em;
+        }
+
+        footer {
+          padding: 2rem 0.8rem 1rem;
+        }
+
+        .footer-content {
+          flex-direction: column;
+          gap: 1rem;
+          margin-bottom: 1.5rem;
+        }
+
+        .footer-logo,
+        .footer-links-group {
+          text-align: center;
+          min-width: 100%;
+        }
+
+        .footer-links {
+          gap: 1.5rem;
+        }
+
+        footer nav {
+          align-items: center;
+        }
+
+        .back-to-top-btn {
+          width: 40px;
+          height: 40px;
+          bottom: 20px;
+          right: 20px;
+        }
+      }
+
+      @media (max-width: 360px) {
+        html {
+          font-size: 13px;
+        }
+
+        .link-grid {
+          grid-template-columns: repeat(auto-fill, minmax(5.5rem, 1fr));
+          gap: 0.6rem;
+        }
+
+        header h1 {
+          font-size: 1.4rem;
+        }
+
+        .link-card {
+          padding: 0.8rem 0.5rem;
+          min-height: 70px;
+        }
+
+        .link-card i {
+          font-size: 1.3rem;
+          margin-bottom: 0.3rem;
+        }
+
+        .link-card h3 {
+          font-size: 0.7rem;
+          padding: 0 0.15rem;
+          height: 2.2em;
+        }
+      }
+    </style>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+    />
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        var navLinks = document.querySelectorAll("nav a");
+
+        navLinks.forEach(function (link) {
+          link.addEventListener("click", function (e) {
+            e.preventDefault();
+            navLinks.forEach((l) => l.classList.remove("active"));
+            this.classList.add("active");
+            var targetId = this.getAttribute("href").split("#")[1];
+            var targetElement = document.getElementById(targetId);
+            if (targetElement) {
+              targetElement.scrollIntoView({ behavior: "smooth" });
+
+              var newUrl =
+                window.location.protocol +
+                "//" +
+                window.location.host +
+                window.location.pathname +
+                "#" +
+                targetId;
+              window.history.pushState({ path: newUrl }, "", newUrl);
+            }
+          });
+        });
+
+        function handleHashChange() {
+          var hash = window.location.hash;
+          if (hash) {
+            var targetElement = document.getElementById(hash.substring(1));
+            if (targetElement) {
+              targetElement.scrollIntoView({ behavior: "smooth" });
+              var activeLink = document.querySelector(
+                'nav a[href="' + hash + '"]'
+              );
+              if (activeLink) {
+                navLinks.forEach((l) => l.classList.remove("active"));
+                activeLink.classList.add("active");
+              }
+            }
+          }
+        }
+
+        window.addEventListener("hashchange", handleHashChange);
+        handleHashChange(); // Call on initial load
+      });
+    </script>
+  </head>
+  <body>
+    <header>
+      <h1>WebNav Hub</h1>
+      <p>发现并探索全球精选网站，一站式导航体验</p>
+    </header>
+    <nav>
+      <ul>
+        <li>
+          <a href="#ai-search"><i class="fa-solid fa-robot"></i> Ai搜索</a>
+        </li>
+        <li>
+          <a href="#social"><i class="fa-solid fa-share-nodes"></i> 社交媒体</a>
+        </li>
+        <li>
+          <a href="#tools"><i class="fa-solid fa-toolbox"></i> 实用工具</a>
+        </li>
+        <li>
+          <a href="#tech-news"
+            ><i class="fa-solid fa-newspaper"></i> 科技资讯</a
+          >
+        </li>
+        <li>
+          <a href="#cloud-storage"><i class="fa-solid fa-cloud"></i> 云存储</a>
+        </li>
+        <li>
+          <a href="#email"><i class="fa-solid fa-envelope"></i> 电子邮箱</a>
+        </li>
+      </ul>
+    </nav>
+    <main>
+      <h2 class="category-title" id="ai-search">
+        <i class="fa-solid fa-robot"></i> Ai搜索
+      </h2>
+      <section class="link-grid">
+        <div class="link-card">
+          <a href="https://www.google.com" target="_blank"></a>
+          <i class="fa-brands fa-google"></i>
+          <h3>Google</h3>
+        </div>
+        <div class="link-card">
+          <a href="https://www.bing.com" target="_blank"></a>
+          <i class="fa-brands fa-microsoft"></i>
+          <h3>Bing</h3>
+        </div>
+        <div class="link-card">
+          <a href="https://openrouter.ai/" target="_blank"></a>
+          <i class="fa-brands fa-openid"></i>
+          <h3>openrouter</h3>
+        </div>
+        <div class="link-card">
+          <a href="https://websim.ai/" target="_blank"></a>
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <h3>websim</h3>
+        </div>
+        <div class="link-card">
+          <a href="https://chatgpt.com/" target="_blank"></a>
+          <i class="fa-brands fa-google"></i>
+          <h3>chatgpt</h3>
+        </div>
+        <div class="link-card">
+          <a href="https://www.doubao.com/chat/" target="_blank"></a>
+          <i class="fa-solid fa-paw"></i>
+          <h3>傻豆包</h3>
+        </div>
+        <div class="link-card">
+          <a href="https://chat.qwen.ai/" target="_blank"></a>
+          <i class="fa-brands fa-rocketchat"></i>
+          <h3>通义千问</h3>
+        </div>
+        <div class="link-card">
+          <a href="https://kimi.moonshot.cn/" target="_blank"></a>
+          <i class="fa-regular fa-moon"></i>
+          <h3>kimi</h3>
+        </div>
+        <div class="link-card">
+          <a href="https://yiyan.baidu.com/" target="_blank"></a>
+          <i class="fa-solid fa-dumpster-fire"></i>
+          <h3>文心一言</h3>
+        </div>
+        <div class="link-card">
+          <a href="https://yuanbao.tencent.com/" target="_blank"></a>
+          <i class="fa-solid fa-robot"></i>
+          <h3>腾讯元宝</h3>
+        </div>
+        <div class="link-card">
+          <a href="https://aistudio.google.com/" target="_blank"></a>
+          <i class="fa-solid fa-robot"></i>
+          <h3>google AIstudio</h3>
+        </div>
+        <div class="link-card">
+          <a href="https://gemini.google.com/" target="_blank"></a>
+          <i class="fa-brands fa-google-plus"></i>
+          <h3>gemini</h3>
+        </div>
+        <div class="link-card">
+          <a href="https://build.nvidia.com/" target="_blank"></a>
+          <i class="fa-solid fa-microchip"></i>
+          <h3>nvidia</h3>
+        </div>
+        <div class="link-card">
+          <a href="https://claude.ai/" target="_blank"></a>
+          <i class="fa-solid fa-robot"></i>
+          <h3>claude</h3>
+        </div>
+        <div class="link-card">
+          <a href="https://chat.chutes.ai/" target="_blank"></a>
+          <i class="fa-solid fa-robot"></i>
+          <h3>chutesai</h3>
+        </div>
+        <div class="link-card">
+          <a href="https://mistral.ai/" target="_blank"></a>
+          <i class="fa-solid fa-brain"></i>
+          <h3>mistral</h3>
+        </div>
+        <div class="link-card">
+          <a href="https://groq.com/" target="_blank"></a>
+          <i class="fa-solid fa-group-arrows-rotate"></i>
+          <h3>groq</h3>
+        </div>
+        <div class="link-card">
+          <a href="https://www.medscape.com/" target="_blank"></a>
+          <i class="fa-solid fa-stethoscope"></i>
+          <h3>medscape</h3>
+        </div>
+        <div class="link-card">
+          <a href="https://heck.ai/" target="_blank"></a>
+          <i class="fa-brands fa-rocketchat"></i>
+          <h3>heck.ai</h3>
+        </div>
+        <div class="link-card">
+          <a href="https://www.wenxiaobai.com/" target="_blank"></a>
+          <i class="fa-solid fa-mask"></i>
+          <h3>问小白</h3>
+        </div>
+        <div class="link-card">
+          <a href="https://app.leonardo.ai/" target="_blank"></a>
+          <i class="fa-regular fa-images"></i>
+          <h3>leonardo.ai绘图</h3>
+        </div>
+        <div class="link-card">
+          <a href="https://huggingface.co/" target="_blank"></a>
+          <i class="fa-solid fa-face-rolling-eyes"></i>
+          <h3>huggingface</h3>
+        </div>
+        <div class="link-card">
+          <a href="https://lmarena.ai/" target="_blank"></a>
+          <i class="fa-solid fa-robot"></i>
+          <h3>lmarena</h3>
+        </div>
+        <div class="link-card">
+          <a href="https://kelaode.ai/" target="_blank"></a>
+          <i class="fa-solid fa-robot"></i>
+          <h3>kelaode</h3>
+        </div>
+        <div class="link-card">
+          <a href="https://x.ai/" target="_blank"></a>
+          <i class="fa-brands fa-x-twitter"></i>
+          <h3>x.ai</h3>
+        </div>
+        <div class="link-card">
+          <a href="https://ascvdpce.186404.xyz/" target="_blank"></a>
+          <i class="fa-solid fa-heart-pulse"></i>
+          <h3>pce计算</h3>
+        </div>
+        <div class="link-card">
+          <a href="https://www.deepseek.com/" target="_blank"></a>
+          <i class="fa-brands fa-rocketchat"></i>
+          <h3>deepseek</h3>
+        </div>
+        <div class="link-card">
+          <a href="https://ai.dangbei.com/" target="_blank"></a>
+          <i class="fa-brands fa-rocketchat"></i>
+          <h3>当贝AI</h3>
+        </div>
+        <div class="link-card">
+          <a href="https://firebase.google.com/" target="_blank"></a>
+          <i class="fa-solid fa-code-branch"></i>
+          <h3>firebase.google</h3>
+        </div>
+        <div class="link-card">
+          <a href="https://www.beago.ai/" target="_blank"></a>
+          <i class="fa-brands fa-rocketchat"></i>
+          <h3>beago.ai</h3>
+        </div>
+        <div class="link-card">
+          <a href="https://sigmabrowser.com/chat" target="_blank"></a>
+          <i class="fa-brands fa-rocketchat"></i>
+          <h3>sigmachat</h3>
+        </div>
+        <div class="link-card">
+          <a href="https://bolt.new/" target="_blank"></a>
+          <i class="fa-solid fa-bolt"></i>
+          <h3>bolt.new</h3>
+        </div>
+      </section>
+
+      <h2 class="category-title" id="social">
+        <i class="fa-solid fa-share-nodes"></i> 社交媒体
+      </h2>
+      <section class="link-grid">
+        <div class="link-card">
+          <a href="https://www.facebook.com" target="_blank"></a>
+          <i class="fa-brands fa-facebook"></i>
+          <h3>Facebook</h3>
+        </div>
+        <div class="link-card">
+          <a href="https://twitter.com" target="_blank"></a>
+          <i class="fa-brands fa-twitter"></i>
+          <h3>Twitter</h3>
+        </div>
+        <div class="link-card">
+          <a href="https://twitterxz.com/" target="_blank"></a>
+          <i class="fa-brands fa-x-twitter"></i>
+          <h3>推特视频下载</h3>
+        </div>
+        <div class="link-card">
+          <a href="https://www.instagram.com" target="_blank"></a>
+          <i class="fa-brands fa-instagram"></i>
+          <h3>Instagram</h3>
+        </div>
+        <div class="link-card">
+          <a href="https://render.com/" target="_blank"></a>
+          <i class="fa-solid fa-draw-polygon"></i>
+          <h3>render</h3>
+        </div>
+        <div class="link-card">
+          <a href="https://deno.com/deploy" target="_blank"></a>
+          <i class="fa-solid fa-d"></i>
+          <h3>deno</h3>
+        </div>
+        <div class="link-card">
+          <a href="https://railway.com/" target="_blank"></a>
+          <i class="fa-solid fa-archway"></i>
+          <h3>railway</h3>
+        </div>
+        <div class="link-card">
+          <a href="https://vercel.com/" target="_blank"></a>
+          <i class="fa-solid fa-v"></i>
+          <h3>vercel</h3>
+        </div>
+        <div class="link-card">
+          <a href="https://www.netlify.com/" target="_blank"></a>
+          <i class="fa-brands fa-n"></i>
+          <h3>netlify</h3>
+        </div>
+        <div class="link-card">
+          <a href="https://www.tiktok.com" target="_blank"></a>
+          <i class="fa-brands fa-tiktok"></i>
+          <h3>TikTok</h3>
+        </div>
+        <div class="link-card">
+          <a href="https://goingbus.com/" target="_blank"></a>
+          <i class="fa-brands fa-n"></i>
+          <h3>爆米花视频</h3>
+        </div>
+        <div class="link-card">
+          <a href="https://www.reddit.com" target="_blank"></a>
+          <i class="fa-brands fa-reddit"></i>
+          <h3>Reddit</h3>
+        </div>
+        <div class="link-card">
+          <a
+            href="https://www.downloadyoutubesubtitles.com/"
+            target="_blank"
+          ></a>
+          <i class="fa-brands fa-youtube"></i>
+          <h3>油管字幕下载</h3>
+        </div>
+        <div class="link-card">
+          <a href="https://github.com/" target="_blank"></a>
+          <i class="fa-brands fa-github"></i>
+          <h3>GitHub</h3>
+        </div>
+        <div class="link-card">
+          <a href="https://www.y2mate.com/" target="_blank"></a>
+          <i class="fa-solid fa-download"></i>
+          <h3>油管视频下载</h3>
+        </div>
+        <div class="link-card">
+          <a href="https://youtube.iiilab.com/" target="_blank"></a>
+          <i class="fa-solid fa-download"></i>
+          <h3>视频下载</h3>
+        </div>
+        <div class="link-card">
+          <a href="https://suno.com/" target="_blank"></a>
+          <i class="fa-solid fa-music"></i>
+          <h3>suno</h3>
+        </div>
+        <div class="link-card">
+          <a href="https://mv.186404.xyz/" target="_blank"></a>
+          <i class="fa-solid fa-tv"></i>
+          <h3>电影导航</h3>
+        </div>
+      </section>
+
+      <h2 class="category-title" id="tools">
+        <i class="fa-solid fa-toolbox"></i> 实用工具
+      </h2>
+      <section class="link-grid">
+        <div class="link-card">
+          <a href="https://translate.google.com" target="_blank"></a>
+          <i class="fa-solid fa-language"></i>
+          <h3>Google翻译</h3>
+        </div>
+        <div class="link-card">
+          <a href="https://d.186404.xyz/" target="_blank"></a>
+          <i class="fa-solid fa-link"></i>
+          <h3>短链</h3>
+        </div>
+        <div class="link-card">
+          <a href="https://dynv6.com/" target="_blank"></a>
+          <i class="fa-solid fa-network-wired"></i>
+          <h3>dynv6</h3>
+        </div>
+        <div class="link-card">
+          <a href="https://fast.com/" target="_blank"></a>
+          <i class="fa-solid fa-gauge-high"></i>
+          <h3>网速测试</h3>
+        </div>
+        <div class="link-card">
+          <a href="https://www.cloudns.net/" target="_blank"></a>
+          <i class="fa-solid fa-cloud"></i>
+          <h3>Cloudns</h3>
+        </div>
+        <div class="link-card">
+          <a href="https://www.cloudflare.com/zh-cn/" target="_blank"></a>
+          <i class="fa-solid fa-shield-halved"></i>
+          <h3>Cloudflare</h3>
+        </div>
+        <div class="link-card">
+          <a href="https://ygpy.net/" target="_blank"></a>
+          <i class="fa-solid fa-user-group"></i>
+          <h3>一个朋友</h3>
+        </div>
+        <div class="link-card">
+          <a href="https://notebooklm.google/" target="_blank"></a>
+          <i class="fa-solid fa-book"></i>
+          <h3>谷歌笔记</h3>
+        </div>
+        <div class="link-card">
+          <a href="https://email.ml/" target="_blank"></a>
+          <i class="fa-solid fa-envelope"></i>
+          <h3>临时邮箱</h3>
+        </div>
+        <div class="link-card">
+          <a href="https://www.ahhhhfs.com/" target="_blank"></a>
+          <i class="fa-solid fa-blog"></i>
+          <h3>A姐</h3>
+        </div>
+        <div class="link-card">
+          <a href="https://ip.sb/" target="_blank"></a>
+          <i class="fa-solid fa-location-dot"></i>
+          <h3>IP查询</h3>
+        </div>
+        <div class="link-card">
+          <a href="https://dns.he.net/" target="_blank"></a>
+          <i class="fa-solid fa-network-wired"></i>
+          <h3>dns.he域名托管</h3>
+        </div>
+        <div class="link-card">
+          <a href="https://www.site.ac/" target="_blank"></a>
+          <i class="fa-solid fa-right-left"></i>
+          <h3>Site域名转发</h3>
+        </div>
+        <div class="link-card">
+          <a href="https://zh.go-to-library.sk/" target="_blank"></a>
+          <i class="fa-solid fa-book-reader"></i>
+          <h3>Z-Library</h3>
+        </div>
+        <div class="link-card">
+          <a href="https://domain.digitalplat.org/" target="_blank"></a>
+          <i class="fa-solid fa-globe"></i>
+          <h3>us.kg域名</h3>
+        </div>
+        <div class="link-card">
+          <a href="https://www.spaceship.com/zh/" target="_blank"></a>
+          <i class="fa-solid fa-rocket"></i>
+          <h3>Spaceship廉价域名</h3>
+        </div>
+        <div class="link-card">
+          <a href="https://www.cursor.com/" target="_blank"></a>
+          <i class="fa-solid fa-i-cursor"></i>
+          <h3>cursor</h3>
+        </div>
+        <div class="link-card">
+          <a href="https://fontawesome.com/" target="_blank"></a>
+          <i class="fa-solid fa-icons"></i>
+          <h3>FontAwesome图标</h3>
+        </div>
+        <div class="link-card">
+          <a href="https://scamalytics.com/" target="_blank"></a>
+          <i class="fa-solid fa-icons"></i>
+          <h3>ip清洁度查询</h3>
+        </div>
+        <div class="link-card">
+          <a href="https://test-ipv6.com/" target="_blank"></a>
+          <i class="fa-solid fa-ethernet"></i>
+          <h3>test-ipv6</h3>
+        </div>
+        <div class="link-card">
+          <a href="https://html.zone/ip" target="_blank"></a>
+          <i class="fa-brands fa-sourcetree"></i>
+          <h3>zone/ip</h3>
+        </div>
+        <div class="link-card">
+          <a
+            href="https://www.lumiproxy.com/zh-hans/online-proxy/proxysite/"
+            target="_blank"
+          ></a>
+          <i class="fa-solid fa-unlock"></i>
+          <h3>免费网络代理</h3>
+        </div>
+        <div class="link-card">
+          <a href="https://ipcheck.ing/" target="_blank"></a>
+          <i class="fa-solid fa-location-dot"></i>
+          <h3>ipcheck</h3>
+        </div>
+        <div class="link-card">
+          <a href="https://console.cron-job.org/" target="_blank"></a>
+          <i class="fa-solid fa-ethernet"></i>
+          <h3>定时任务cron-job</h3>
+        </div>
+        <div class="link-card">
+          <a href="https://uptimerobot.com/" target="_blank"></a>
+          <i class="fa-solid fa-location-dot"></i>
+          <h3>uptimerobot</h3>
+        </div>
+        <div class="link-card">
+          <a href="https://forwardemail.net/" target="_blank"></a>
+          <i class="fa-solid fa-envelopes-bulk"></i>
+          <h3>forwardemail</h3>
+        </div>
+        <div class="link-card">
+          <a href="https://improvmx.com/" target="_blank"></a>
+          <i class="fa-solid fa-envelopes-bulk"></i>
+          <h3>improvmx</h3>
+        </div>
+        <div class="link-card">
+          <a href="https://www.dmarcadvisor.com/" target="_blank"></a>
+          <i class="fa-solid fa-fingerprint"></i>
+          <h3>dmarcadvisor</h3>
+        </div>
+        <div class="link-card">
+          <a href="https://www.spamhaus.org/" target="_blank"></a>
+          <i class="fa-solid fa-triangle-exclamation"></i>
+          <h3>spamhaus</h3>
+        </div>
+        <div class="link-card">
+          <a href="https://mail-tester.com/" target="_blank"></a>
+          <i class="fa-solid fa-envelopes-bulk"></i>
+          <h3>mail-tester</h3>
+        </div>
+        <div class="link-card">
+          <a href="https://lookup.icann.org/" target="_blank"></a>
+          <i class="fa-solid fa-search"></i>
+          <h3>icann查域名</h3>
+        </div>
+        <div class="link-card">
+          <a href="https://id.186404.xyz/page" target="_blank"></a>
+          <i class="fa-solid fa-id-card"></i>
+          <h3>身份码生成</h3>
+        </div>
+        <div class="link-card">
+          <a href="https://paywallbuster.com/" target="_blank"></a>
+          <i class="fa-solid fa-key"></i>
+          <h3>付费墙</h3>
+        </div>
+        <div class="link-card">
+          <a href="https://g.186404.xyz/wallHub/" target="_blank"></a>
+          <i class="fa-solid fa-unlock"></i>
+          <h3>PaywallHub</h3>
+        </div>
+        <div class="link-card">
+          <a href="https://fmhy.net/" target="_blank"></a>
+          <i class="fa-regular fa-folder-open"></i>
+          <h3>fmhy</h3>
+        </div>
+        <div class="link-card">
+          <a href="https://www.remove.bg/" target="_blank"></a>
+          <i class="fa-solid fa-image-portrait"></i>
+          <h3>remove</h3>
+        </div>
+        <div class="link-card">
+          <a href="https://picwish.com/" target="_blank"></a>
+          <i class="fa-regular fa-image"></i>
+          <h3>picwish</h3>
+        </div>
+        <div class="link-card">
+          <a href="https://zenvideo.qq.com/" target="_blank"></a>
+          <i class="fa-solid fa-video"></i>
+          <h3>腾讯智影</h3>
+        </div>
+        <div class="link-card">
+          <a href="https://www.hidoha.net/" target="_blank"></a>
+          <i class="fa-solid fa-fingerprint"></i>
+          <h3>免费域名HiDNS</h3>
+        </div>
+        <div class="link-card">
+          <a href="https://pixabay.com/" target="_blank"></a>
+          <i class="fa-brands fa-pix"></i>
+          <h3>pixabay</h3>
+        </div>
+        <div class="link-card">
+          <a href="https://www.infinityfree.com/" target="_blank"></a>
+          <i class="fa-solid fa-infinity"></i>
+          <h3>InfinityFree</h3>
+        </div>
+        <div class="link-card">
+          <a href="https://anyvoice.net/" target="_blank"></a>
+          <i class="fa-solid fa-microphone"></i>
+          <h3>anyvoice</h3>
+        </div>
+        <div class="link-card">
+          <a href="https://fish.audio/" target="_blank"></a>
+          <i class="fa-solid fa-fish"></i>
+          <h3>fish.audio</h3>
+        </div>
+        <div class="link-card">
+          <a href="https://noiz.ai/" target="_blank"></a>
+          <i class="fa-solid fa-circle-notch"></i>
+          <h3>noizai</h3>
+        </div>
+        <div class="link-card">
+          <a href="https://hailuoai.video/" target="_blank"></a>
+          <i class="fa-solid fa-file-audio"></i>
+          <h3>海螺Ai</h3>
+        </div>
+        <div class="link-card">
+          <a href="https://desec.io/" target="_blank"></a>
+          <i class="fa-solid fa-anchor"></i>
+          <h3>desec免费域名</h3>
+        </div>
+        <div class="link-card">
+          <a href="https://lovable.dev/" target="_blank"></a>
+          <i class="fa-solid fa-shield-heart"></i>
+          <h3>lovable网站生成</h3>
+        </div>
+        <div class="link-card">
+          <a href="https://www.netlib.re/" target="_blank"></a>
+          <i class="fa-solid fa-globe"></i>
+          <h3>netlib免费域名</h3>
+        </div>
+        <div class="link-card">
+          <a href="https://zone.id/" target="_blank"></a>
+          <i class="fa-solid fa-id-card-clip"></i>
+          <h3>zone免费域名</h3>
+        </div>
+        <div class="link-card">
+          <a href="https://x10hosting.com/" target="_blank"></a>
+          <i class="fa-solid fa-ghost"></i>
+          <h3>x10hosting免费托管</h3>
+        </div>
+        <div class="link-card">
+          <a href="https://www.nodeloc.com/" target="_blank"></a>
+          <i class="fa-brands fa-hashnode"></i>
+          <h3>nodeloc社区</h3>
+        </div>
+        <div class="link-card">
+          <a href="https://same.new/" target="_blank"></a>
+          <i class="fa-solid fa-copy"></i>
+          <h3>same复制网站</h3>
+        </div>
+        <div class="link-card">
+          <a href="https://claw.cloud/" target="_blank"></a>
+          <i class="fa-solid fa-cloud"></i>
+          <h3>claw容器</h3>
+        </div>
+        <div class="link-card">
+          <a href="https://www.subeasy.ai/zh-CN" target="_blank"></a>
+          <i class="fa-solid fa-closed-captioning"></i>
+          <h3>subeasy字幕</h3>
+        </div>
+        <div class="link-card">
+          <a href="https://www.stormkit.io/" target="_blank"></a>
+          <i class="fa-solid fa-cloud"></i>
+          <h3>Stormkit</h3>
+        </div>
+      </section>
+
+      <h2 class="category-title" id="tech-news">
+        <i class="fa-solid fa-newspaper"></i> 科技资讯
+      </h2>
+      <section class="link-grid">
+        <div class="link-card">
+          <a href="https://www.techcrunch.com" target="_blank"></a>
+          <i class="fa-solid fa-newspaper"></i>
+          <h3>TechCrunch</h3>
+        </div>
+        <div class="link-card">
+          <a href="https://www.wired.com" target="_blank"></a>
+          <i class="fa-solid fa-bolt"></i>
+          <h3>Wired</h3>
+        </div>
+        <div class="link-card">
+          <a href="https://www.theverge.com" target="_blank"></a>
+          <i class="fa-solid fa-laptop"></i>
+          <h3>The Verge</h3>
+        </div>
+        <div class="link-card">
+          <a href="https://arstechnica.com" target="_blank"></a>
+          <i class="fa-solid fa-rocket"></i>
+          <h3>Ars Technica</h3>
+        </div>
+        <div class="link-card">
+          <a href="https://www.engadget.com" target="_blank"></a>
+          <i class="fa-solid fa-mobile-screen"></i>
+          <h3>Engadget</h3>
+        </div>
+        <div class="link-card">
+          <a href="https://scitechdaily.com/" target="_blank"></a>
+          <i class="fa-solid fa-microscope"></i>
+          <h3>科技日报</h3>
+        </div>
+        <div class="link-card">
+          <a href="https://techradar.com" target="_blank"></a>
+          <i class="fa-solid fa-satellite"></i>
+          <h3>TechRadar</h3>
+        </div>
+        <div class="link-card">
+          <a href="https://b.186404.xyz/" target="_blank"></a>
+          <i class="fa-solid fa-blog"></i>
+          <h3>科技博客</h3>
+        </div>
+        <div class="link-card">
+          <a href="https://www.cnbeta.com.tw/" target="_blank"></a>
+          <i class="fa-solid fa-circle-info"></i>
+          <h3>cnbeta</h3>
+        </div>
+      </section>
+
+      <h2 class="category-title" id="cloud-storage">
+        <i class="fa-solid fa-cloud"></i> 云存储
+      </h2>
+      <section class="link-grid">
+        <div class="link-card">
+          <a href="https://www.dropbox.com" target="_blank"></a>
+          <i class="fa-brands fa-dropbox"></i>
+          <h3>Dropbox</h3>
+        </div>
+        <div class="link-card">
+          <a href="https://drive.google.com" target="_blank"></a>
+          <i class="fa-brands fa-google-drive"></i>
+          <h3>Google Drive</h3>
+        </div>
+        <div class="link-card">
+          <a href="https://onedrive.live.com" target="_blank"></a>
+          <i class="fa-brands fa-microsoft"></i>
+          <h3>OneDrive</h3>
+        </div>
+        <div class="link-card">
+          <a href="https://www.box.com" target="_blank"></a>
+          <i class="fa-solid fa-box"></i>
+          <h3>Box</h3>
+        </div>
+        <div class="link-card">
+          <a href="https://www.mediafire.com" target="_blank"></a>
+          <i class="fa-solid fa-file"></i>
+          <h3>MediaFire</h3>
+        </div>
+        <div class="link-card">
+          <a href="https://mega.nz" target="_blank"></a>
+          <i class="fa-solid fa-cloud-arrow-up"></i>
+          <h3>MEGA</h3>
+        </div>
+        <div class="link-card">
+          <a href="https://mypikpak.com/" target="_blank"></a>
+          <i class="fa-solid fa-cloud"></i>
+          <h3>PikPak</h3>
+        </div>
+      </section>
+
+      <h2 class="category-title" id="email">
+        <i class="fa-solid fa-envelope"></i> 电子邮箱
+      </h2>
+      <section class="link-grid">
+        <div class="link-card">
+          <a href="https://mail.google.com" target="_blank"></a>
+          <i class="fa-solid fa-envelope"></i>
+          <h3>Gmail</h3>
+        </div>
+        <div class="link-card">
+          <a href="https://outlook.live.com" target="_blank"></a>
+          <i class="fa-brands fa-microsoft"></i>
+          <h3>Outlook</h3>
+        </div>
+        <div class="link-card">
+          <a href="https://cock.li/" target="_blank"></a>
+          <i class="fa-solid fa-envelope-open"></i>
+          <h3>cock邮箱</h3>
+        </div>
+        <div class="link-card">
+          <a href="https://disroot.org/" target="_blank"></a>
+          <i class="fa-solid fa-envelope-circle-check"></i>
+          <h3>disroot邮箱</h3>
+        </div>
+        <div class="link-card">
+          <a href="https://www.protonmail.com" target="_blank"></a>
+          <i class="fa-solid fa-shield-halved"></i>
+          <h3>ProtonMail</h3>
+        </div>
+        <div class="link-card">
+          <a href="https://mail.qq.com" target="_blank"></a>
+          <i class="fa-brands fa-qq"></i>
+          <h3>QQ邮箱</h3>
+        </div>
+        <div class="link-card">
+          <a href="https://librem.one/" target="_blank"></a>
+          <i class="fa-solid fa-at"></i>
+          <h3>librem邮箱</h3>
+        </div>
+        <div class="link-card">
+          <a href="https://www.linshigmail.com/" target="_blank"></a>
+          <i class="fa-solid fa-envelopes-bulk"></i>
+          <h3>临时谷歌邮箱</h3>
+        </div>
+      </section>
+    </main>
+    <div id="back-to-top" class="back-to-top-btn">
+      <i class="fa-solid fa-chevron-up"></i>
+    </div>
+
+    <footer>
+      <div class="footer-content">
+        <div class="footer-logo">
+          <h2>WebNav Hub</h2>
+          <p>让网络探索更简单</p>
+        </div>
+        <div class="footer-links">
+          <div class="footer-links-group">
+            <h3>关于我们</h3>
+            <nav>
+              <a href="#"><i class="fa-solid fa-info-circle"></i> 关于网站</a>
+              <a href="#"><i class="fa-solid fa-envelope"></i> 联系我们</a>
+              <a href="#"
+                ><i class="fa-solid fa-question-circle"></i> 帮助中心</a
+              >
+            </nav>
+          </div>
+          <div class="footer-links-group">
+            <h3>法律信息</h3>
+            <nav>
+              <a href="#"><i class="fa-solid fa-shield-alt"></i> 隐私政策</a>
+              <a href="#"><i class="fa-solid fa-file-contract"></i> 使用条款</a>
+              <a href="#"><i class="fa-solid fa-cookie"></i> Cookie政策</a>
+            </nav>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>© 2025 WebNav Hub. 保留所有权利。</p>
+      </div>
+    </footer>
+
+    <script>
+      // 添加返回顶部功能
+      document.addEventListener("DOMContentLoaded", function () {
+        const backToTopBtn = document.getElementById("back-to-top");
+
+        // 显示/隐藏返回顶部按钮
+        window.addEventListener("scroll", function () {
+          if (window.pageYOffset > 300) {
+            backToTopBtn.classList.add("show");
+          } else {
+            backToTopBtn.classList.remove("show");
+          }
+        });
+
+        // 点击返回顶部
+        backToTopBtn.addEventListener("click", function () {
+          window.scrollTo({
+            top: 0,
+            behavior: "smooth",
+          });
+        });
+      });
+    </script>
+  </body>
+</html>
